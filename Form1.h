@@ -92,9 +92,11 @@ namespace forms2{
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  currentServerNameLabel;
 
-
-
-
+	private: System::Windows::Forms::ListBox^ test;
+	private: System::Windows::Forms::ListBox^ triggerBox;
+	private: System::Windows::Forms::Label^ triggerLabel;
+	private: System::Windows::Forms::NumericUpDown^ exposureTimeBox;
+	private: System::Windows::Forms::Label^ exposureTimeLabel;
 
 
 
@@ -124,6 +126,8 @@ namespace forms2{
 			this->saveLabel = (gcnew System::Windows::Forms::Label());
 			this->formatLabel = (gcnew System::Windows::Forms::Label());
 			this->formatListBox = (gcnew System::Windows::Forms::ListBox());
+			this->triggerLabel = (gcnew System::Windows::Forms::Label());
+			this->triggerBox = (gcnew System::Windows::Forms::ListBox());
 			this->initButton = (gcnew System::Windows::Forms::Button());
 			this->pictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->prevListBox = (gcnew System::Windows::Forms::ListBox());
@@ -137,6 +141,8 @@ namespace forms2{
 			this->zoomLabel2 = (gcnew System::Windows::Forms::Label());
 			this->pixelSizeLabel = (gcnew System::Windows::Forms::Label());
 			this->pixelSizeBox = (gcnew System::Windows::Forms::NumericUpDown());
+			this->exposureTimeLabel = (gcnew System::Windows::Forms::Label());
+			this->exposureTimeBox = (gcnew System::Windows::Forms::NumericUpDown());
 			this->saveCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->folderLabel = (gcnew System::Windows::Forms::LinkLabel());
 			this->cameraLabel = (gcnew System::Windows::Forms::Label());
@@ -151,6 +157,8 @@ namespace forms2{
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->zoomBox))->BeginInit();
 			this->previewGroup->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pixelSizeBox))->BeginInit();
+			this->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTimeBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// camDialogButton
@@ -278,6 +286,47 @@ namespace forms2{
 			this->formatListBox->Size = System::Drawing::Size(136, 17);
 			this->formatListBox->TabIndex = 13;
 			// 
+			// triggerLabel
+			// 
+			this->triggerLabel->AutoSize = true;
+			this->triggerLabel->Location = System::Drawing::Point(15, 86);
+			this->triggerLabel->Name = L"triggerLabel";
+			this->triggerLabel->Size = System::Drawing::Size(61, 13);
+			this->triggerLabel->TabIndex = 11;
+			this->triggerLabel->Text = L"Trigger:";
+			// 
+			// triggerBox
+			// 
+			this->triggerBox->ColumnWidth = 40;
+			this->triggerBox->FormattingEnabled = true;
+			this->triggerBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Internal", L"Ext Start"});
+			this->triggerBox->Location = System::Drawing::Point(82, 86);
+			this->triggerBox->MultiColumn = true;
+			this->triggerBox->Name = L"triggerBox";
+			this->triggerBox->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->triggerBox->Size = System::Drawing::Size(136, 17);
+			this->triggerBox->TabIndex = 13;
+			this->triggerBox->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::triggerBox_SelectedIndexChanged);
+			// 
+			// exposureTimeLabel
+			// 
+			this->exposureTimeLabel->AutoSize = true;
+			this->exposureTimeLabel->Location = System::Drawing::Point(230, 86);
+			this->exposureTimeLabel->Name = L"exposureTimeLabel";
+			this->exposureTimeLabel->Size = System::Drawing::Size(81, 13);
+			this->exposureTimeLabel->TabIndex = 24;
+			this->exposureTimeLabel->Text = L"Exposure Time:";
+			// 
+			// exposureTimeBox
+			// 
+			this->exposureTimeBox->Location = System::Drawing::Point(317, 83);
+			this->exposureTimeBox->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 4, 0, 0, 0 });
+			this->exposureTimeBox->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->exposureTimeBox->Name = L"exposureTimeBox";
+			this->exposureTimeBox->Size = System::Drawing::Size(32, 20);
+			this->exposureTimeBox->TabIndex = 23;
+			this->exposureTimeBox->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			// 
 			// initButton
 			// 
 			this->initButton->Location = System::Drawing::Point(61, 107);
@@ -362,6 +411,8 @@ namespace forms2{
 			this->previewGroup->Controls->Add(this->zoomLabel2);
 			this->previewGroup->Controls->Add(this->pixelSizeLabel);
 			this->previewGroup->Controls->Add(this->pixelSizeBox);
+			this->previewGroup->Controls->Add(this->exposureTimeLabel);
+			this->previewGroup->Controls->Add(this->exposureTimeBox);
 			this->previewGroup->Controls->Add(this->zoomBox);
 			this->previewGroup->Controls->Add(this->zoomLabel);
 			this->previewGroup->Controls->Add(this->frameLabel);
@@ -519,6 +570,8 @@ namespace forms2{
 			this->Controls->Add(this->initButton);
 			this->Controls->Add(this->formatListBox);
 			this->Controls->Add(this->formatLabel);
+			this->Controls->Add(this->triggerBox);
+			this->Controls->Add(this->triggerLabel);
 			this->Controls->Add(this->saveLabel);
 			this->Controls->Add(this->interruptButton);
 			this->Controls->Add(this->imageProgressBar);
@@ -600,6 +653,7 @@ namespace forms2{
 		bool openCameraDialog();
 		void initCamera();
 		void changeCamera();
+		void changeTrigger();
 	//	void takeImage(Object^ runloop);
 	//	void saveImage(UInt16 rows, UInt16 cols, UInt16 lays, UInt16 *buf);
 		bool changePath();
@@ -621,14 +675,8 @@ namespace forms2{
 		System::Void interruptButton_Click(System::Object^  sender, System::EventArgs^  e){interrupt(true);}
 		System::Void pathClicked(System::Object^  sender, System::EventArgs^  e){changePath();}
 		System::Void initButton_Click(System::Object^  sender, System::EventArgs^  e) {initCamera();}
-		System::Void prevListBox_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e)
-		{
-			selectPreviousImage(prevListBox->SelectedIndex);
-		}
-		System::Void frameListBox_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) 
-		{
-			setDisplayImage(prevListBox->SelectedIndex,frameListBox->SelectedIndex);
-		}
+		System::Void prevListBox_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e){selectPreviousImage(prevListBox->SelectedIndex);}
+		System::Void frameListBox_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {setDisplayImage(prevListBox->SelectedIndex,frameListBox->SelectedIndex);}
 		System::Void saveCheckBox_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {setSaveData(saveCheckBox->Checked);}
 		System::Void saveButton_Click(System::Object^  sender, System::EventArgs^  e) {saveImage(prevListBox->SelectedIndex);}
 		System::Void Form1_ResizeEnd(System::Object^  sender, System::EventArgs^  e) {resize();}
@@ -640,9 +688,11 @@ private: System::Void pathLink_LinkClicked(System::Object^  sender, System::Wind
 
 private: System::Void cameraListBox_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 			 //MessageBox::Show(String::Concat("Changing camera. ",e->GetType()->ToString()),"Simplicio",MessageBoxButtons::OK);
-			 changeCamera();
-			 
+			 changeCamera(); 
 		 }
+private: System::Void triggerBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+			changeTrigger();
+		}
 private: System::Void singleFrameCheckBox_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 			setSingleFrame(singleFrameCheckBox->Checked);
 		 }

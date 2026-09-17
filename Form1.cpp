@@ -7,9 +7,16 @@
 #include "ImageThread.h"
 #include "ImageData.h"
 #include "SimplicioServer.h"
+#include <iostream>
 //#using "DataStructures.dll"
 //using namespace System;
 //using namespace System::Threading;
+
+static std::ostream& operator<<(std::ostream& os, const System::String^ obj)
+{
+	// Write obj to stream
+	return os;
+}
 
 namespace forms2{
 	using namespace System::IO;
@@ -307,6 +314,12 @@ namespace forms2{
 		//cameraListBox->SetSelected(cameraListBox->FindStringExact(camname),1);
 		cameraListBox->SelectedIndex = cameraListBox->FindStringExact(camname);
 		cameraNameLabel->Text = camThread->getCameraDriverName();	
+	}
+	void Form1::changeTrigger() {
+		if (triggerLabel->Text->Equals(triggerBox->SelectedItem->ToString()))
+			return;//already using this trigger
+		String^ triggername = safe_cast<String^>(triggerBox->SelectedItem);
+		System::Diagnostics::Debug::WriteLine(triggername);
 	}
 	void Form1::selectPreviousImage(int stepsBack){
 		//selects a previous image. tries to use the current layer index.
