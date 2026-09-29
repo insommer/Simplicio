@@ -95,8 +95,6 @@ namespace forms2{
 	private: System::Windows::Forms::ListBox^ test;
 	private: System::Windows::Forms::ListBox^ triggerBox;
 	private: System::Windows::Forms::Label^ triggerLabel;
-	private: System::Windows::Forms::NumericUpDown^ exposureTimeBox;
-	private: System::Windows::Forms::Label^ exposureTimeLabel;
 
 
 
@@ -141,8 +139,6 @@ namespace forms2{
 			this->zoomLabel2 = (gcnew System::Windows::Forms::Label());
 			this->pixelSizeLabel = (gcnew System::Windows::Forms::Label());
 			this->pixelSizeBox = (gcnew System::Windows::Forms::NumericUpDown());
-			this->exposureTimeLabel = (gcnew System::Windows::Forms::Label());
-			this->exposureTimeBox = (gcnew System::Windows::Forms::NumericUpDown());
 			this->saveCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->folderLabel = (gcnew System::Windows::Forms::LinkLabel());
 			this->cameraLabel = (gcnew System::Windows::Forms::Label());
@@ -157,8 +153,6 @@ namespace forms2{
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->zoomBox))->BeginInit();
 			this->previewGroup->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pixelSizeBox))->BeginInit();
-			this->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->exposureTimeBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// camDialogButton
@@ -308,25 +302,6 @@ namespace forms2{
 			this->triggerBox->TabIndex = 13;
 			this->triggerBox->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::triggerBox_SelectedIndexChanged);
 			// 
-			// exposureTimeLabel
-			// 
-			this->exposureTimeLabel->AutoSize = true;
-			this->exposureTimeLabel->Location = System::Drawing::Point(230, 86);
-			this->exposureTimeLabel->Name = L"exposureTimeLabel";
-			this->exposureTimeLabel->Size = System::Drawing::Size(81, 13);
-			this->exposureTimeLabel->TabIndex = 24;
-			this->exposureTimeLabel->Text = L"Exposure Time:";
-			// 
-			// exposureTimeBox
-			// 
-			this->exposureTimeBox->Location = System::Drawing::Point(317, 83);
-			this->exposureTimeBox->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 4, 0, 0, 0 });
-			this->exposureTimeBox->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->exposureTimeBox->Name = L"exposureTimeBox";
-			this->exposureTimeBox->Size = System::Drawing::Size(32, 20);
-			this->exposureTimeBox->TabIndex = 23;
-			this->exposureTimeBox->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			// 
 			// initButton
 			// 
 			this->initButton->Location = System::Drawing::Point(61, 107);
@@ -411,8 +386,6 @@ namespace forms2{
 			this->previewGroup->Controls->Add(this->zoomLabel2);
 			this->previewGroup->Controls->Add(this->pixelSizeLabel);
 			this->previewGroup->Controls->Add(this->pixelSizeBox);
-			this->previewGroup->Controls->Add(this->exposureTimeLabel);
-			this->previewGroup->Controls->Add(this->exposureTimeBox);
 			this->previewGroup->Controls->Add(this->zoomBox);
 			this->previewGroup->Controls->Add(this->zoomLabel);
 			this->previewGroup->Controls->Add(this->frameLabel);
@@ -614,6 +587,7 @@ namespace forms2{
 	private:
 		static const int IMAGE_HISTORY_LENGTH = 20;
 		static const int NUM_BUFFERS = 8;
+		int lastError;
 		bool cameraInited;
 		bool running;
 		bool continueImageLoop;

@@ -340,9 +340,14 @@ namespace forms2 {
 		stop();
 		releaseBuffer();
 
-		lastError = PCO_SetTriggerMode(camera, 0x0001); // Software trigger.
-		if (lastError == PCO_NOERROR)
-			lastError = PCO_SetAcquireMode(camera, 0x0000); // Ignore acquire-enable input.
+		if (extTrig) {
+			lastError = PCO_SetTriggerMode(camera, 0x0002); // External trigger.
+		}
+		else {
+			lastError = PCO_SetTriggerMode(camera, 0x0001); // Software trigger.
+		}
+		//if (lastError == PCO_NOERROR)
+		//	lastError = PCO_SetAcquireMode(camera, 0x0000); // Ignore acquire-enable input.
 		if (lastError == PCO_NOERROR)
 			lastError = PCO_ArmCamera(camera);
 
@@ -384,8 +389,9 @@ namespace forms2 {
 		if (lastError == PCO_NOERROR)
 			lastError = PCO_SetImageParameters(camera, imageWidth, imageHeight,
 				IMAGEPARAMETERS_READ_WHILE_RECORDING, NULL, 0);
-		if (lastError == PCO_NOERROR)
+		if (lastError == PCO_NOERROR) {
 			lastError = PCO_SetRecordingState(camera, 0x0001);
+		}
 
 		if (lastError != PCO_NOERROR) {
 			showSdkError("Preparing image transfer", lastError);
@@ -412,10 +418,28 @@ namespace forms2 {
 		if (lastError != PCO_NOERROR)
 			return;
 
-		WORD triggered = 0;
-		lastError = PCO_ForceTrigger(camera, &triggered);
-		if (lastError == PCO_NOERROR && triggered == 0)
-			lastError = PCO_ERROR_APPLICATION;
+		WORD trigSig = 1; //0 == ext trigger HIGH; 1 == ext trigger LOW
+		lastError = PCO_GetExpTrigSignalStatus(camera, &trigSig);
+		if(extTrig){
+			while (trigSig == 1) {
+				lastError = PCO_GetExpTrigSignalStatus(camera, &trigSig);
+			}
+			if (lastError == PCO_NOERROR) {
+				WORD triggered = 0;
+				lastError = PCO_ForceTrigger(camera, &triggered);
+				if (lastError == PCO_NOERROR && triggered == 0)
+					lastError = PCO_ERROR_APPLICATION;
+			}
+		}
+		else {
+			if (lastError == PCO_NOERROR) {
+				WORD triggered = 0;
+				lastError = PCO_ForceTrigger(camera, &triggered);
+				if (lastError == PCO_NOERROR && triggered == 0)
+					lastError = PCO_ERROR_APPLICATION;
+			}
+		}
+
 		framePending = (lastError == PCO_NOERROR);
 	}
 

@@ -23,6 +23,7 @@ namespace forms2{
 		void interrupt(bool callback); 
 		bool openCameraDialog();
 		bool isRunning();
+		bool extTrig = false;
 		void setSingleFrame(bool sf){singleFrame=sf;}
 		bool getSingleFrame() {return singleFrame;}
 		void setPath(String^ path);

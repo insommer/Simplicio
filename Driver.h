@@ -18,6 +18,7 @@ namespace forms2{
 		virtual int getImageHeight()=0;
 		virtual void readImage(UInt16 *buffer)=0;
 		virtual int armCamera()=0;
+		//virtual int armCamera(int trig) = 0;
 		virtual String^ getDriverName()=0;
 		//String^ getCameraName(){return new String(cameraName);}
 
@@ -29,6 +30,7 @@ namespace forms2{
 		virtual bool isDouble(){return false;}
 		virtual void update()=0;
 
+		static bool extTrig = false;
 		static const int MODE = 1;
 		static const int TRIG = 1<<1;
 		static const int ROIX1 = 1<<2;

@@ -22,6 +22,7 @@ namespace forms2 {
 		virtual int getImageWidth() override;
 		virtual int getImageHeight() override;
 		virtual void readImage(System::UInt16* buffer) override;
+		//virtual int armCamera() override;
 		virtual int armCamera() override;
 		virtual System::String^ getDriverName() override {
 			return gcnew System::String("pco.pixelfly 1.4 USB");
@@ -47,7 +48,6 @@ namespace forms2 {
 		int lastError;
 		bool framePending;
 		bool recording;
-
 		void releaseBuffer();
 		void showSdkError(System::String^ operation, int errorCode);
 	};

@@ -171,6 +171,7 @@ namespace forms2{
 		if (!cameraInited){
 			MessageBox::Show("Initialize camera first","Box",MessageBoxButtons::OK);return true;}
 		if (Interlocked::CompareExchange(running,1,0)!=0) return true;
+		if (extTrig) driver->extTrig = true;
 		setContinue(runLoop);
 		setInterrupt(false);
 		try{

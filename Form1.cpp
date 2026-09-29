@@ -318,8 +318,8 @@ namespace forms2{
 	void Form1::changeTrigger() {
 		if (triggerLabel->Text->Equals(triggerBox->SelectedItem->ToString()))
 			return;//already using this trigger
-		String^ triggername = safe_cast<String^>(triggerBox->SelectedItem);
-		System::Diagnostics::Debug::WriteLine(triggername);
+		//String^ triggername = safe_cast<String^>(triggerBox->SelectedItem);
+		//System::Diagnostics::Debug::WriteLine(triggername);
 	}
 	void Form1::selectPreviousImage(int stepsBack){
 		//selects a previous image. tries to use the current layer index.
@@ -559,7 +559,10 @@ namespace forms2{
 	
 	void Form1::acquire(bool runLoop)
 	{
-		bool err = camThread->acquire((int)layersBox->Value,runLoop);
+		if (triggerBox->Text->Equals("Ext Start")) {
+			camThread->extTrig = true;
+		}
+		bool err = camThread->acquire((int)layersBox->Value, runLoop);
 		if (!err){
 			runIndicator->Checked = true;
 			layersBox->Enabled = false;
